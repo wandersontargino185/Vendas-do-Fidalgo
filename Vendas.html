@@ -522,4 +522,49 @@ function gerarTXT(){
   if(dados.vendas.length > 0){
     dados.vendas.sort((a,b) => a.data.localeCompare(b.data)).forEach(v => {
       let [ano, mes, dia] = v.data.split('-');
-      l
+      let pct = v.valor * dados.pct / 100;
+      txt += `${dia}/${mes}/${ano} - ${formatar(v.valor)} | ${dados.pct}%: ${formatar(pct)}\n`;
+    });
+  } else {
+    txt += `Nenhuma venda lançada\n`;
+  }
+
+  txt += `\nSAÍDAS / VALES:\n`;
+  txt += `-------------------------------------\n`;
+  if(dados.saidas.length > 0){
+    dados.saidas.sort((a,b) => a.data.localeCompare(b.data)).forEach(s => {
+      let [ano, mes, dia] = s.data.split('-');
+      txt += `${dia}/${mes}/${ano} - ${formatar(s.valor)}\n`;
+    });
+  } else {
+    txt += `Nenhuma saída lançada\n`;
+  }
+
+  txt += `\n=====================================\n`;
+  txt += `RESUMO FINANCEIRO\n`;
+  txt += `=====================================\n`;
+  txt += `Total Vendas: ${formatar(totalVendas)}\n`;
+  txt += `Extra + Comissão: ${formatar(dados.extraComissao)}\n`;
+  txt += `Comissão ${dados.pct}% Total: ${formatar(totalPct)}\n`;
+  txt += `Salário Fixo: ${formatar(dados.salarioFixo)}\n`;
+  txt += `Extra Adiantado: ${formatar(dados.extraAdiantado)}\n`;
+  txt += `Total Vales/Saídas: ${formatar(totalSaidas)}\n`;
+  txt += `\n`;
+  txt += `LÍQUIDO VENDAS: ${formatar(liquidoVendas)}\n`;
+  txt += `LÍQUIDO COMISSÃO: ${formatar(liquidoPct)}\n`;
+  txt += `-------------------------------------\n`;
+  txt += `TOTAL A RECEBER: ${formatar(totalReceber)}\n`;
+  txt += `=====================================\n`;
+
+  let nomeArquivo = nomeLoja.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+  let blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  let link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `relatorio_${nomeArquivo}_${nomeMes.replace(' ', '_')}.txt`;
+  link.click();
+}
+
+atualizar();
+</script>
+</body>
+</html>
